@@ -5,9 +5,11 @@ using UnityEngine;
 public class HaduAgent : Agent
 {
 	private Rigidbody rb;
+	private float previousDist;
 	
 	public override void InitializeAgent()
 	{
+		previousDist = Vector3.Distance(transform.position, GameManager.Instance.goal.transform.position);
 		rb = GetComponent<Rigidbody>();
 		gameObject.transform.position = GameManager.Instance.start.position;
 		gameObject.transform.rotation = GameManager.Instance.start.rotation;
@@ -17,50 +19,50 @@ public class HaduAgent : Agent
 	{
 		List<float> state = new List<float>();
 
-		state.Add(Mathf.Abs(transform.position.x - GameManager.Instance.goal.transform.position.x));
-		state.Add(Mathf.Abs(transform.position.z - GameManager.Instance.goal.transform.position.z));
+		state.Add(transform.position.x);
+		state.Add(transform.position.z);
 		
 		return state;
 	}
 
 	public override void AgentStep(float[] act)
 	{
+		float actionX = act[0];
+		float actionZ = act[1];
 
-		if ((int)act[0] > 0)
-		{
-			rb.AddForce(Vector3.forward * 10);
-		}
-		else
-		{
-			rb.AddForce(-Vector3.forward * 10);
-		}
+		float moveX = 0f;
+		float moveZ = 0f;
 		
-		if ((int)act[1] > 0)
-		{
-			rb.AddForce(Vector3.left * 10);
-		}
-		else
-		{
-			rb.AddForce(-Vector3.right * 10);
-		}
+		//Call the AddForce function of our Rigidbody2D rb2d supplying movement multiplied by speed to move our player.
+		if (actionX == 0)
+			moveX = -0.01f;
+		if (actionX == 1)
+			moveX = 0.01f;
+		
+		if (actionZ == 0)
+			moveZ = -0.01f;
+		if (actionZ == 1)
+			moveZ = 0.01f;
+		
+		Vector3 pos = new Vector3(
+			gameObject.transform.position.x + moveX,
+			gameObject.transform.position.y,
+			gameObject.transform.position.z + moveZ);
+
+		gameObject.transform.position = pos;
 
 		float dist = Vector3.Distance(transform.position, GameManager.Instance.goal.transform.position);
-		
-		if (done == false)
-		{
-			reward = 0.0001f;
-		}
 
 		if (dist < 1f)
-			reward = 50f;
-		
-		if (dist > 50f)
 		{
 			done = true;
+			reward = 1f;
+		}
+
+		if (dist > 50f)
+		{
 			reward = -1f;
 		}
-		else
-			done = false;
 	}
 
 	public override void AgentReset()

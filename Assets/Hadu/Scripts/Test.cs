@@ -13,7 +13,6 @@ public class Test : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//if (Input.GetKeyDown(KeyCode.Z))
-		//	rb.AddForce(Vector3.forward * 10);
+		Debug.DrawLine(transform.position, transform.position + Vector3.up * 1, Color.blue, 200f);
 	}
 }
