@@ -29,25 +29,11 @@ public class HaduAgent : Agent
 	{
 		float actionX = act[0];
 		float actionZ = act[1];
-
-		float moveX = 0f;
-		float moveZ = 0f;
-		
-		//Call the AddForce function of our Rigidbody2D rb2d supplying movement multiplied by speed to move our player.
-		if (actionX == 0)
-			moveX = -0.01f;
-		if (actionX == 1)
-			moveX = 0.01f;
-		
-		if (actionZ == 0)
-			moveZ = -0.01f;
-		if (actionZ == 1)
-			moveZ = 0.01f;
 		
 		Vector3 pos = new Vector3(
-			gameObject.transform.position.x + moveX,
+			gameObject.transform.position.x + actionX,
 			gameObject.transform.position.y,
-			gameObject.transform.position.z + moveZ);
+			gameObject.transform.position.z + actionZ);
 
 		gameObject.transform.position = pos;
 

@@ -14,5 +14,6 @@ public class Test : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Debug.DrawLine(transform.position, transform.position + Vector3.up * 1, Color.blue, 200f);
+		Debug.Log("velocity: " + rb.velocity);
 	}
 }
