@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
 	public Transform start;
 	public Transform goal;
+	public Transform miniGoal;
 
 	public static GameManager Instance { get { return _instance; } }
  

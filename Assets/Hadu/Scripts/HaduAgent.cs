@@ -5,14 +5,15 @@ using UnityEngine;
 public class HaduAgent : Agent
 {
 	private Rigidbody rb;
-	private float previousDist;
+	private float timer = 0f;
+	private Dictionary<Vector3, int> memoryMap;
 	
 	public override void InitializeAgent()
 	{
-		previousDist = Vector3.Distance(transform.position, GameManager.Instance.goal.transform.position);
 		rb = GetComponent<Rigidbody>();
 		gameObject.transform.position = GameManager.Instance.start.position;
 		gameObject.transform.rotation = GameManager.Instance.start.rotation;
+		memoryMap = new Dictionary<Vector3, int>();
 	}
 
 	public override List<float> CollectState()
@@ -30,31 +31,47 @@ public class HaduAgent : Agent
 		float actionX = act[0];
 		float actionZ = act[1];
 		
-		Vector3 pos = new Vector3(
-			gameObject.transform.position.x + actionX,
-			gameObject.transform.position.y,
-			gameObject.transform.position.z + actionZ);
+		Vector3 vel = new Vector3(actionX, rb.velocity.y, actionZ);
+			
+		rb.velocity = vel;
+		
+		//if (rb.velocity.magnitude > 3)
+		//	reward -= 0.1f;
 
-		gameObject.transform.position = pos;
+		float dist1 = Vector3.Distance(transform.position, 
+			GameManager.Instance.goal.transform.position);
+		float dist2 = Vector3.Distance(transform.position,
+			GameManager.Instance.miniGoal.transform.position);
 
-		float dist = Vector3.Distance(transform.position, GameManager.Instance.goal.transform.position);
-
-		if (dist < 1f)
+		/*if (done == false)
 		{
+			reward += 0.1f;
+		}*/
+
+		if (transform.position.y < 0f)
 			done = true;
+
+		if (dist1 < 1f)
+		{
 			reward = 1f;
 		}
-
-		if (dist > 50f)
+		else
 		{
-			reward = -1f;
+			reward = -(Mathf.Clamp(dist1, 0, 100) / 1000);
 		}
+
+		if (dist2 < 1f)
+			reward = 0.1f;
+		//if (timer % 1 == 0)
+		//	reward = 0.01f;
+		//timer += Time.deltaTime;
 	}
 
 	public override void AgentReset()
 	{
 		gameObject.transform.position = GameManager.Instance.start.position;
 		gameObject.transform.rotation = GameManager.Instance.start.rotation;
+		memoryMap = new Dictionary<Vector3, int>();
 		rb.velocity = Vector3.zero;
 		rb.angularVelocity = Vector3.zero;
 	}

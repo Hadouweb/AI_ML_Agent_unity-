@@ -5,6 +5,13 @@ using UnityEngine;
 public class Test : MonoBehaviour {
 
 	private Rigidbody rb;
+	private Vector3 previousPos;
+
+	void Awake()
+	{
+		gameObject.transform.position = GameManager.Instance.start.position;
+		gameObject.transform.rotation = GameManager.Instance.start.rotation;
+	}
 	
 	// Use this for initialization
 	void Start () {
@@ -13,7 +20,8 @@ public class Test : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.DrawLine(transform.position, transform.position + Vector3.up * 1, Color.blue, 200f);
-		Debug.Log("velocity: " + rb.velocity);
+		Debug.DrawLine(previousPos, transform.position, Color.blue, 200f);
+		Debug.Log("velocity: " + rb.velocity.magnitude);
+		previousPos = transform.position;
 	}
 }
