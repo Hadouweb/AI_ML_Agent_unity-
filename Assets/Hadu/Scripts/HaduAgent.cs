@@ -49,19 +49,24 @@ public class HaduAgent : Agent
 		}*/
 
 		if (transform.position.y < 0f)
-			done = true;
-
-		if (dist1 < 1f)
 		{
-			reward = 1f;
+			reward = -0.1f;
+			done = true;
 		}
-		else
+
+
+		if (rb.velocity.magnitude < 1f)
+			reward = -0.01f;
+		
+		if (dist1 < 1f)
+			reward = 1f;
+		else if (dist2 < 1f)
+			reward = 0.1f;
+		/*else
 		{
 			reward = -(Mathf.Clamp(dist1, 0, 100) / 1000);
-		}
+		}*/
 
-		if (dist2 < 1f)
-			reward = 0.1f;
 		//if (timer % 1 == 0)
 		//	reward = 0.01f;
 		//timer += Time.deltaTime;
